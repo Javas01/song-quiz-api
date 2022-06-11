@@ -6,11 +6,11 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 1338
+const PORT = process.env.PORT || 1338;
 
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: '*',
   })
 );
 
@@ -54,7 +54,7 @@ const getTopTracks = async (id, token) => {
       url: song.preview_url,
     }));
   } catch (error) {
-    console.log(error);
+    console.log(error.response.data);
   }
 };
 
@@ -75,7 +75,7 @@ app.get('/api/:artist', async (req, res) => {
       songs: topTracks,
     });
   } catch (error) {
-    console.error(error.response.data);
+    console.log(error.response.data);
     res.send('not found').end();
   }
 });
@@ -85,17 +85,15 @@ server.listen(PORT, console.log(`Listening on port: ${PORT}`));
 
 const io = require('socket.io')(server, {
   cors: {
-    origin: ['http://localhost:3000'],
+    origin: ['https://song-quiz-theta.vercel.app', 'http://localhost:3000'],
   },
 });
 
 let allRooms = {};
 
 io.on('connection', (socket) => {
-    console.log(allRooms);
   io.emit('allRooms', allRooms);
   socket.on('correctAnswer', (room) => {
-    console.log('right');
     io.in(room).emit('showCorrectAnswer', socket.id);
   });
   socket.on('goToNextSong', () => {
