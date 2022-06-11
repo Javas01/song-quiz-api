@@ -6,6 +6,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
+const PORT = process.env.PORT || 1338
 
 app.use(
   cors({
@@ -80,7 +81,7 @@ app.get('/api/:artist', async (req, res) => {
 });
 
 const server = http.createServer(app);
-server.listen(1338, console.log('Listening on port: 1338'));
+server.listen(PORT, console.log(`Listening on port: ${PORT}`));
 
 const io = require('socket.io')(server, {
   cors: {
